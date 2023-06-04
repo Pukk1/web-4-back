@@ -1,1 +1,31 @@
-
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+          vk:
+#            https://vk.com/apps?act=manage
+            client-id: ${VK_CLIENT_ID}
+            client-secret: ${VK_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            #use post, as vk needs clientId and clientSecret as request params and does not accepts Basic auth
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            scope: email
+        provider:
+          vk:
+            #revoke=1 needs to always show vk dialog
+            authorization-uri: https://oauth.vk.com/authorize?revoke=1
+            token-uri: https://oauth.vk.com/access_token
+            user-info-uri: https://api.vk.com/method/users.get?v=5.52&fields=photo_max
+            user-name-attribute: first_name
+          google:
+            user-name-attribute: name
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_NAME:postgres}
+    password: ${DB_PASSWORD:postgres}
