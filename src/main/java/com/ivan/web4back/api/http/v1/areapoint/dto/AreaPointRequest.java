@@ -1,7 +1,7 @@
 package com.ivan.web4back.api.http.v1.areapoint.dto;
 
+import com.ivan.web4back.model.account.AccountEntity;
 import com.ivan.web4back.model.areapoint.AreaPointEntity;
-import com.ivan.web4back.model.user.UserEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ public class AreaPointRequest {
     private final Boolean hit;
     private final LocalDateTime dateTime;
 
-    public AreaPointEntity toEntity(Long id, UserEntity owner) {
-        return new AreaPointEntity(id, owner, this.x, this.y, this.r, this.hit, this.dateTime);
+    public AreaPointEntity toEntity(Long id, AccountEntity owner) {
+        return new AreaPointEntity(id, this.x, this.y, this.r, this.hit, this.dateTime, owner);
     }
 
-    public AreaPointEntity toNewEntity(UserEntity owner) {
+    public AreaPointEntity toNewEntity(AccountEntity owner) {
         return toEntity(0L, owner);
     }
 }

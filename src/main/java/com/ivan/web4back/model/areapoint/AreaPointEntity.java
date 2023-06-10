@@ -1,6 +1,6 @@
 package com.ivan.web4back.model.areapoint;
 
-import com.ivan.web4back.model.user.UserEntity;
+import com.ivan.web4back.model.account.AccountEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,13 +18,12 @@ public class AreaPointEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private UserEntity owner;
-
     private Double x;
     private Double y;
     private Double r;
     private Boolean hit;
     private LocalDateTime dateTime;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private AccountEntity owner;
 }
