@@ -1,4 +1,4 @@
-package com.ivan.web4back.utils.exception.auth;
+package com.ivan.web4back.utils.auth;
 
 import org.springframework.security.core.Authentication;
 

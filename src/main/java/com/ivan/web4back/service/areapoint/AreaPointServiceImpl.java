@@ -5,7 +5,7 @@ import com.ivan.web4back.model.areapoint.AreaPointEntity;
 import com.ivan.web4back.model.areapoint.AreaPointRepository;
 import com.ivan.web4back.service.access.AccessService;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
-import com.ivan.web4back.utils.exception.auth.AuthenticationFacade;
+import com.ivan.web4back.utils.auth.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
