@@ -1,9 +1,9 @@
 package com.ivan.web4back.model.access;
 
 public enum AuthProvider {
-    LOCAL("LOCAL"),
-    GOOGLE("GOOGLE"),
-    VK("VK");
+    LOCAL("local"),
+    GOOGLE("google"),
+    VK("vk");
 
     private final String name;
 

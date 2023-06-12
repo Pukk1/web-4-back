@@ -9,8 +9,7 @@ public class OAuth2UserInfoFactory {
         if (providerName.equalsIgnoreCase(AuthProvider.GOOGLE.toString())) {
             return new GoogleOAuth2UserInfo(attributes);
         } else if (providerName.equalsIgnoreCase(AuthProvider.VK.toString())) {
-            //TODO
-            throw new RuntimeException("TODO");
+            return new VkOAuth2UserInfo(attributes);
         } else {
             throw new IllegalArgumentException("Provider name = " + providerName + " not found");
         }
