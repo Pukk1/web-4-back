@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface AccessRepository extends CrudRepository<AccessEntity, Long> {
-    public Optional<AccessEntity> findByUsername(String username);
+    Optional<AccessEntity> findByUsername(String username);
 }
