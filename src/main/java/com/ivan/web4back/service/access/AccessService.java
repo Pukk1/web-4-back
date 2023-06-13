@@ -5,6 +5,7 @@ import com.ivan.web4back.model.access.AuthProvider;
 import com.ivan.web4back.model.access.Authority;
 import com.ivan.web4back.model.account.AccountEntity;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
+import com.ivan.web4back.utils.exception.UsernameAlreadyExistException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,5 +14,8 @@ public interface AccessService {
     AccessEntity findByUsername(String username) throws UserNotFoundException;
 
     @Transactional
-    AccessEntity createOauthAccess(String username, AuthProvider authProvider, AccountEntity account, List<Authority> authorities);
+    AccessEntity createOauthAccess(String username, AuthProvider authProvider, AccountEntity account, List<Authority> authorities) throws UsernameAlreadyExistException;
+
+    @Transactional
+    AccessEntity createBasicAccess(String username, String password, AccountEntity account, List<Authority> authorities) throws UsernameAlreadyExistException;
 }

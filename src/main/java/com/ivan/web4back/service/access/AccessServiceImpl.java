@@ -6,6 +6,7 @@ import com.ivan.web4back.model.access.AuthProvider;
 import com.ivan.web4back.model.access.Authority;
 import com.ivan.web4back.model.account.AccountEntity;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
+import com.ivan.web4back.utils.exception.UsernameAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +26,26 @@ public class AccessServiceImpl implements AccessService {
 
     @Override
     @Transactional
-    public AccessEntity createOauthAccess(String username, AuthProvider authProvider, AccountEntity account, List<Authority> authorities) {
+    public AccessEntity createOauthAccess(String username, AuthProvider authProvider, AccountEntity account, List<Authority> authorities) throws UsernameAlreadyExistException {
         if (authProvider == AuthProvider.LOCAL) {
             throw new IllegalArgumentException("No local auth provider");
         }
+
         var access = new AccessEntity(null, username, null, authProvider, true, account, authorities);
-        var accessOptional = repository.findByUsername(access.getUsername());
-        if (accessOptional.isPresent()) {
-            throw new IllegalArgumentException("Access with username = " + access.getUsername() + " already exist");
+        if (repository.findByUsername(access.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistException(access.getUsername());
+        }
+
+        return repository.save(access);
+    }
+
+    @Override
+    @Transactional
+    public AccessEntity createBasicAccess(String username, String password, AccountEntity account, List<Authority> authorities) throws UsernameAlreadyExistException {
+        AccessEntity access = new AccessEntity(null, username, password, AuthProvider.LOCAL, true, account, authorities);
+
+        if (repository.findByUsername(access.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistException(access.getUsername());
         }
 
         return repository.save(access);

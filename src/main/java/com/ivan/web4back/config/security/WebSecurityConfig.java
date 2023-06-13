@@ -1,36 +1,25 @@
 package com.ivan.web4back.config.security;
 
 import com.ivan.web4back.security.CustomBasicJwtAuthFilter;
-import com.ivan.web4back.security.CustomUserDetailsService;
 import com.ivan.web4back.security.TokenAuthenticationFilter;
 import com.ivan.web4back.security.TokenProvider;
 import com.ivan.web4back.security.oauth2.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -48,10 +37,7 @@ public class WebSecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
-    private final CustomUserDetailsService userDetailsService;
-//    private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -64,7 +50,7 @@ public class WebSecurityConfig {
                         sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/login/**", "/oauth/**").permitAll()
+                        .requestMatchers("/", "/login/**", "/registration/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(
@@ -72,7 +58,12 @@ public class WebSecurityConfig {
                 )
                 .oauth2Login(oAuth2 -> oAuth2
                         .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
+                                .baseUri("/login/oauth2/authorize")
                                 .authorizationRequestRepository(authorizationRequestRepository)
+                        )
+                        .redirectionEndpoint(
+                                redirectionEndpointConfig -> redirectionEndpointConfig
+                                        .baseUri("/login/oauth2/code/*")
                         )
                         .tokenEndpoint(
                                 tokenEndpointConfig -> tokenEndpointConfig
@@ -91,19 +82,9 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-//    @Autowired
-//    protected void configure() throws Exception {
-//        authenticationManagerBuilder.userDetailsService(userDetailsService);
-//    }
-
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
     @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

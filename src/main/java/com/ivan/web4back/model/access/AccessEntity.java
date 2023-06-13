@@ -18,7 +18,7 @@ public class AccessEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     private String password;
@@ -35,5 +35,6 @@ public class AccessEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "authorities")
+    @Enumerated(EnumType.STRING)
     private List<Authority> authorities;
 }

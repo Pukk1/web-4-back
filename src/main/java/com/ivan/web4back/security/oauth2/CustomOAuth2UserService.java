@@ -8,6 +8,7 @@ import com.ivan.web4back.security.oauth2.user.OAuth2UserInfoFactory;
 import com.ivan.web4back.service.access.AccessService;
 import com.ivan.web4back.service.account.AccountService;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
+import com.ivan.web4back.utils.exception.UsernameAlreadyExistException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.RequestEntity;
@@ -132,7 +133,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
+    private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) throws UsernameAlreadyExistException {
         var attributes = oAuth2User.getAttributes();
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), attributes);
 

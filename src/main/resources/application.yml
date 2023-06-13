@@ -6,16 +6,14 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-#            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - email
               - profile
           vk:
-#            https://vk.com/apps?act=manage
             client-id: ${VK_CLIENT_ID}
             client-secret: ${VK_CLIENT_SECRET}
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            #use post, as vk needs clientId and clientSecret as request params and does not accepts Basic auth
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope: email
@@ -34,12 +32,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
 local:
   auth:
     token-exp-time: 800000
     secret-key: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
-logging:
-  level:
-    root: debug
+#logging:
+#  level:
+#    root: debug
