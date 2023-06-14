@@ -14,6 +14,7 @@ public class UserOAuth2Principal implements OAuth2User {
     private final Map<String, Object> attributes;
     private final List<Authority> authorities;
     private final String name;
+    private final String username;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -27,6 +28,6 @@ public class UserOAuth2Principal implements OAuth2User {
 
     @Override
     public String getName() {
-        return name;
+        return username;
     }
 }

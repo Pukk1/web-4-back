@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class TokenProvider {
@@ -25,13 +26,15 @@ public class TokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    public String createToken(String username) {
+    public String createToken(String username, String name) {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + tokenExpTime);
 
+        Map<String, String> claims = Map.of("username", username, "name", name);
+
         return Jwts.builder()
-                .setSubject(username)
+                .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, secretKey)

@@ -4,6 +4,7 @@ import com.ivan.web4back.security.CustomBasicJwtAuthFilter;
 import com.ivan.web4back.security.TokenAuthenticationFilter;
 import com.ivan.web4back.security.TokenProvider;
 import com.ivan.web4back.security.oauth2.*;
+import com.ivan.web4back.service.access.AccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ public class WebSecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final AccessService accessService;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -94,7 +96,7 @@ public class WebSecurityConfig {
     }
 
     protected CustomBasicJwtAuthFilter customBasicJwtAuthFilter() throws Exception {
-        return new CustomBasicJwtAuthFilter(authenticationManager(), tokenProvider);
+        return new CustomBasicJwtAuthFilter(authenticationManager(), tokenProvider, accessService);
     }
 
     @Bean

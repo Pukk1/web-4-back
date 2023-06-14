@@ -139,11 +139,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         try {
             AccessEntity access = accessService.findByUsername(userInfo.getUsername());
-            return new UserOAuth2Principal(attributes, access.getAuthorities(), access.getAccount().getName());
+            return new UserOAuth2Principal(attributes, access.getAuthorities(), access.getAccount().getName(), access.getUsername());
         } catch (UserNotFoundException e) {
             var newAccount = accountService.createAccount(userInfo.getName());
             var access = accessService.createOauthAccess(userInfo.getUsername(), userInfo.getProvider(), newAccount, List.of(Authority.USER_ROLE));
-            return new UserOAuth2Principal(attributes, access.getAuthorities(), access.getAccount().getName());
+            return new UserOAuth2Principal(attributes, access.getAuthorities(), access.getAccount().getName(), access.getUsername());
         }
     }
 }

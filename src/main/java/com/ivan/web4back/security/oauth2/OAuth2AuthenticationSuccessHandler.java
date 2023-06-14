@@ -1,8 +1,10 @@
 package com.ivan.web4back.security.oauth2;
 
 import com.ivan.web4back.security.TokenProvider;
+import com.ivan.web4back.service.access.AccessService;
 import com.ivan.web4back.utils.CookieUtils;
 import com.ivan.web4back.utils.exception.BadRequestException;
+import com.ivan.web4back.utils.exception.UserNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,17 +31,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final List<String> authorizedRedirectUris;
+    private final AccessService accessService;
 
     @Autowired
     public OAuth2AuthenticationSuccessHandler(
             @Value("${local.auth.authorized-urls}")
             List<String> authorizedRedirectUris,
             TokenProvider tokenProvider,
-            HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository
+            HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
+            AccessService accessService
     ) {
         this.tokenProvider = tokenProvider;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
         this.authorizedRedirectUris = authorizedRedirectUris;
+        this.accessService = accessService;
     }
 
     @Override
@@ -65,7 +70,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        String token = tokenProvider.createToken(authentication.getName());
+        var username = authentication.getName();
+        String accountName;
+        try {
+            accountName = accessService.findByUsername(authentication.getName()).getAccount().getName();
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        String token = tokenProvider.createToken(username, accountName);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", token)
