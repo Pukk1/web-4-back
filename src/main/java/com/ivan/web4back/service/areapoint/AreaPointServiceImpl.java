@@ -4,6 +4,7 @@ import com.ivan.web4back.api.http.v1.areapoint.dto.AreaPointRequest;
 import com.ivan.web4back.model.areapoint.AreaPointEntity;
 import com.ivan.web4back.model.areapoint.AreaPointRepository;
 import com.ivan.web4back.service.access.AccessService;
+import com.ivan.web4back.utils.AreaPointComparator;
 import com.ivan.web4back.utils.auth.AuthenticationFacade;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,9 @@ public class AreaPointServiceImpl implements AreaPointService {
     public List<AreaPointEntity> getAllForAccessByUsername(String username) throws UserNotFoundException {
         var access = accessService.findByUsername(username);
         var account = access.getAccount();
-        return account.getAreaPoints();
+        var areaPoints = account.getAreaPoints();
+        areaPoints.sort(new AreaPointComparator());
+        return areaPoints;
     }
 
     @Override
