@@ -11,14 +11,13 @@ public class AreaPointRequest {
     private final Double x;
     private final Double y;
     private final Double r;
-    private final Boolean hit;
     private final LocalDateTime dateTime;
 
-    public AreaPointEntity toEntity(Long id, AccountEntity owner) {
-        return new AreaPointEntity(id, this.x, this.y, this.r, this.hit, this.dateTime, owner);
+    public AreaPointEntity toEntity(Long id, AccountEntity owner, boolean hit) {
+        return new AreaPointEntity(id, this.x, this.y, this.r, hit, this.dateTime, owner);
     }
 
-    public AreaPointEntity toNewEntity(AccountEntity owner) {
-        return toEntity(0L, owner);
+    public AreaPointEntity toNewEntity(AccountEntity owner, boolean hit) {
+        return toEntity(0L, owner, hit);
     }
 }
