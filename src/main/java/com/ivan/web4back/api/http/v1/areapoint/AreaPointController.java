@@ -31,4 +31,9 @@ public class AreaPointController {
                 .map(AreaPointResponse::toResponse)
                 .collect(Collectors.toList());
     }
+
+    @DeleteMapping("/delete-all")
+    public void deleteAllAccountPoints(@RequestParam String username) {
+        service.deleteAllForAccessByUsername(username);
+    }
 }
