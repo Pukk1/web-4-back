@@ -6,10 +6,10 @@ import com.ivan.web4back.service.areapoint.AreaPointService;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,5 +22,13 @@ public class AreaPointController {
     public AreaPointResponse create(@RequestBody AreaPointRequest request) throws UserNotFoundException {
         var resEntity = service.create(request);
         return AreaPointResponse.toResponse(resEntity);
+    }
+
+    @GetMapping("/get-all")
+    @Transactional
+    public List<AreaPointResponse> getAllAccountPoints(@RequestParam String username) throws UserNotFoundException {
+        return service.getAllForAccessByUsername(username).stream()
+                .map(AreaPointResponse::toResponse)
+                .collect(Collectors.toList());
     }
 }

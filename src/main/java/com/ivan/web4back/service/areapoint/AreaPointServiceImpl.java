@@ -8,6 +8,9 @@ import com.ivan.web4back.utils.auth.AuthenticationFacade;
 import com.ivan.web4back.utils.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.ivan.web4back.utils.AreaChecker.checkArea;
 
@@ -21,6 +24,14 @@ public class AreaPointServiceImpl implements AreaPointService {
     @Override
     public AreaPointEntity create(AreaPointEntity entity) {
         return repository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public List<AreaPointEntity> getAllForAccessByUsername(String username) throws UserNotFoundException {
+        var access = accessService.findByUsername(username);
+        var account = access.getAccount();
+        return account.getAreaPoints();
     }
 
     @Override
