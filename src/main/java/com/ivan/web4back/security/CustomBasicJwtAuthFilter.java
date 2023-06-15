@@ -41,7 +41,8 @@ public class CustomBasicJwtAuthFilter extends BasicAuthenticationFilter {
             throw new RuntimeException(e);
         }
         var token = tokenProvider.createToken(username, accountName);
-        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        response.addHeader(HttpHeaders.AUTHORIZATION, /*"Bearer " + */token);
+        response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.AUTHORIZATION);
     }
 
     @Override

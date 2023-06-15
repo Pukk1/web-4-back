@@ -8,6 +8,7 @@ import com.ivan.web4back.service.access.AccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,6 +23,8 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
@@ -55,11 +58,15 @@ public class WebSecurityConfig {
                         sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/login/**", "/registration/**", "/error").permitAll()
+                        .requestMatchers("/", "/registration/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(
                         AbstractHttpConfigurer::disable
+                )
+                .exceptionHandling(
+                        httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
+                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .oauth2Login(oAuth2 -> oAuth2
                         .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
